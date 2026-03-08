@@ -1,0 +1,2060 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RapidRAG — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #080c14;
+      --surface: #0e1420;
+      --surface2: #151d2e;
+      --surface3: #1c2740;
+      --border: #1f2d47;
+      --border2: #2a3d5c;
+      --accent: #00d4ff;
+      --accent2: #0099cc;
+      --accent-dim: rgba(0, 212, 255, 0.08);
+      --accent-dim2: rgba(0, 212, 255, 0.15);
+      --green: #00e676;
+      --green-dim: rgba(0, 230, 118, 0.1);
+      --yellow: #ffd600;
+      --red: #ff5252;
+      --text: #e8f4f8;
+      --text2: #7a9bb5;
+      --text3: #4a6a82;
+      --radius: 14px;
+      --radius-sm: 8px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--border2);
+      border-radius: 4px;
+    }
+
+    /* ── Sidebar ── */
+    .sidebar {
+      width: 260px;
+      min-height: 100vh;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .sidebar-logo {
+      padding: 28px 24px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--accent), #0066aa);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 16px;
+      color: #000;
+      letter-spacing: -1px;
+      flex-shrink: 0;
+    }
+
+    .logo-text {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.5px;
+    }
+
+    .logo-text span {
+      color: var(--accent);
+    }
+
+    .server-status {
+      margin: 16px 16px 0;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+    }
+
+    .server-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--yellow);
+      flex-shrink: 0;
+      transition: background 0.3s;
+    }
+
+    .server-dot.online {
+      background: var(--green);
+      box-shadow: 0 0 6px var(--green);
+    }
+
+    .server-dot.offline {
+      background: var(--red);
+    }
+
+    .server-label {
+      color: var(--text2);
+      flex: 1;
+    }
+
+    .server-url-input {
+      background: none;
+      border: none;
+      outline: none;
+      color: var(--accent);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .sidebar-section {
+      padding: 16px 16px 8px;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text3);
+    }
+
+    .sidebar-clients {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 12px 12px;
+    }
+
+    .client-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-bottom: 2px;
+      border: 1px solid transparent;
+    }
+
+    .client-item:hover {
+      background: var(--surface2);
+    }
+
+    .client-item.active {
+      background: var(--accent-dim2);
+      border-color: var(--border2);
+    }
+
+    .client-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--surface3), var(--border2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 700;
+      flex-shrink: 0;
+      font-family: 'Syne', sans-serif;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+
+    .client-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .client-name {
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .client-meta {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 1px;
+    }
+
+    .client-vectors {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--accent);
+      background: var(--accent-dim);
+      padding: 2px 6px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .new-client-btn {
+      margin: 8px 12px 16px;
+      width: calc(100% - 24px);
+      padding: 10px;
+      background: var(--accent-dim);
+      border: 1px dashed var(--border2);
+      border-radius: var(--radius-sm);
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .new-client-btn:hover {
+      background: var(--accent-dim2);
+      border-color: var(--accent);
+    }
+
+    /* ── Main ── */
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .topbar {
+      padding: 20px 32px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      background: var(--surface);
+      flex-shrink: 0;
+    }
+
+    .topbar-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      flex: 1;
+    }
+
+    .topbar-title span {
+      color: var(--accent);
+    }
+
+    .topbar-type {
+      font-size: 11px;
+      padding: 3px 10px;
+      background: var(--surface3);
+      border-radius: 20px;
+      color: var(--text2);
+      border: 1px solid var(--border2);
+    }
+
+    /* ── Content ── */
+    .content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 28px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: visible;
+    }
+
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .card-icon.blue {
+      background: rgba(0, 212, 255, 0.1);
+    }
+
+    .card-icon.green {
+      background: rgba(0, 230, 118, 0.1);
+    }
+
+    .card-icon.purple {
+      background: rgba(120, 80, 255, 0.1);
+    }
+
+    .card-icon.orange {
+      background: rgba(255, 152, 0, 0.1);
+    }
+
+    .card-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .card-sub {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 1px;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    /* ── Stats Row ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .stat-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: var(--text3);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin-bottom: 6px;
+    }
+
+    .stat-value {
+      font-family: 'DM Mono', monospace;
+      font-size: 24px;
+      font-weight: 500;
+      color: var(--accent);
+    }
+
+    .stat-sub {
+      font-size: 11px;
+      color: var(--text3);
+      margin-top: 2px;
+    }
+
+    /* ── Ingestion Tabs ── */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      padding: 16px 20px 0;
+    }
+
+    .tab {
+      padding: 8px 16px;
+      border-radius: 8px 8px 0 0;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--text3);
+      border: 1px solid transparent;
+      border-bottom: none;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tab:hover {
+      color: var(--text2);
+    }
+
+    .tab.active {
+      background: var(--surface2);
+      color: var(--accent);
+      border-color: var(--border);
+      border-bottom-color: var(--surface2);
+    }
+
+    .tab-content {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) var(--radius-sm);
+      padding: 20px;
+      margin: 0 20px 20px;
+    }
+
+    .tab-panel {
+      display: none;
+    }
+
+    .tab-panel.active {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* ── Form elements ── */
+    label.field-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text2);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    input[type=text],
+    input[type=url],
+    input[type=color],
+    textarea,
+    select {
+      width: 100%;
+      background: var(--surface3);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text);
+      padding: 10px 14px;
+      font-size: 14px;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.15s;
+    }
+
+    input[type=text]:focus,
+    input[type=url]:focus,
+    textarea:focus,
+    select:focus {
+      border-color: var(--accent);
+    }
+
+    input[type=color] {
+      height: 42px;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      line-height: 1.6;
+    }
+
+    select option {
+      background: var(--surface2);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    /* ── Drop zone ── */
+    .drop-zone {
+      border: 2px dashed var(--border2);
+      border-radius: var(--radius-sm);
+      padding: 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .drop-zone:hover,
+    .drop-zone.drag-over {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    .drop-zone input[type=file] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    .drop-icon {
+      font-size: 32px;
+      margin-bottom: 10px;
+    }
+
+    .drop-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text2);
+    }
+
+    .drop-sub {
+      font-size: 12px;
+      color: var(--text3);
+      margin-top: 4px;
+    }
+
+    .drop-selected {
+      margin-top: 10px;
+      font-size: 13px;
+      color: var(--accent);
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ── Logo Upload ── */
+    .logo-upload-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    
+    .logo-preview-circle {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--surface3);
+      border: 2px dashed var(--border2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+      flex-shrink: 0;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .logo-preview-circle:hover {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+    }
+    
+    .logo-preview-circle img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+    
+    .logo-upload-icon {
+      font-size: 20px;
+      color: var(--text3);
+    }
+    
+    .logo-upload-input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* ── Buttons ── */
+    .btn {
+      padding: 11px 22px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-ghost {
+      background: var(--surface3);
+      color: var(--text2);
+      border: 1px solid var(--border);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--border2);
+      color: var(--text);
+    }
+
+    .btn-danger {
+      background: rgba(255, 82, 82, 0.15);
+      color: var(--red);
+      border: 1px solid rgba(255, 82, 82, 0.3);
+    }
+
+    .btn-danger:hover {
+      background: rgba(255, 82, 82, 0.25);
+    }
+
+    /* ── Progress ── */
+    .progress-bar {
+      height: 4px;
+      background: var(--surface3);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--green));
+      border-radius: 4px;
+      transition: width 0.4s ease;
+      width: 0%;
+    }
+
+    .ingestion-log {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      line-height: 1.7;
+      max-height: 140px;
+      overflow-y: auto;
+      color: var(--text2);
+      display: none;
+    }
+
+    .ingestion-log.visible {
+      display: block;
+    }
+
+    .log-line {
+      padding: 0;
+    }
+
+    .log-line.success {
+      color: var(--green);
+    }
+
+    .log-line.error {
+      color: var(--red);
+    }
+
+    .log-line.info {
+      color: var(--accent);
+    }
+
+    /* ── Snippet ── */
+    .snippet-box {
+      position: relative;
+      background: #020509;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 18px;
+    }
+
+    .snippet-box pre {
+      font-family: 'DM Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.8;
+      color: #7dd3fc;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .snippet-box pre .kw {
+      color: #f9a8d4;
+    }
+
+    .snippet-box pre .str {
+      color: #86efac;
+    }
+
+    .snippet-box pre .tag {
+      color: #fbbf24;
+    }
+
+    .snippet-copy-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--surface3);
+      border: 1px solid var(--border2);
+      border-radius: 6px;
+      color: var(--text2);
+      font-size: 12px;
+      padding: 5px 12px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.15s;
+    }
+
+    .snippet-copy-btn:hover {
+      color: var(--text);
+      background: var(--surface2);
+    }
+
+    /* ── Empty state ── */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 32px;
+      text-align: center;
+      gap: 16px;
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      opacity: 0.4;
+    }
+
+    .empty-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text2);
+    }
+
+    .empty-sub {
+      font-size: 14px;
+      color: var(--text3);
+      max-width: 300px;
+      line-height: 1.6;
+    }
+
+    /* ── Modal ── */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      width: 100%;
+      max-width: 560px;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 28px;
+      transform: scale(0.95) translateY(10px);
+      transition: transform 0.25s cubic-bezier(.34, 1.56, .64, 1);
+    }
+
+    .modal-overlay.open .modal {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .modal-sub {
+      font-size: 13px;
+      color: var(--text3);
+      margin-bottom: 24px;
+    }
+
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .modal-footer {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+      justify-content: flex-end;
+    }
+
+    /* ── Toast ── */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .toast {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      animation: toast-in 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    @keyframes toast-in {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .toast.success {
+      border-color: rgba(0, 230, 118, 0.3);
+    }
+
+    .toast.error {
+      border-color: rgba(255, 82, 82, 0.3);
+    }
+
+    /* ── Animations ── */
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .spin {
+      animation: spin 1s linear infinite;
+      display: inline-block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.3s ease;
+    }
+
+    /* ── Ingesting badge ── */
+    .ingesting-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 214, 0, 0.1);
+      border: 1px solid rgba(255, 214, 0, 0.3);
+      color: var(--yellow);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    /* ── Source tags ── */
+    .source-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .source-tag {
+      background: var(--surface3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      color: var(--text2);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* No client selected */
+    #no-client {
+      display: flex;
+    }
+
+    #client-view {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ── Sidebar ── -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">RR</div>
+      <div class="logo-text">Rapid<span>RAG</span></div>
+    </div>
+
+    <div style="padding: 12px 16px 0;">
+      <div class="server-status">
+        <div class="server-dot" id="server-dot"></div>
+        <div style="flex:1; min-width:0;">
+          <div class="server-label" id="server-label">Connecting...</div>
+          <input class="server-url-input" id="server-url" value="http://localhost:8000"
+            placeholder="http://localhost:8000" title="API base URL">
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section">Your Clients</div>
+
+    <div class="sidebar-clients" id="sidebar-clients">
+      <div style="padding: 8px 12px; font-size: 12px; color: var(--text3);">Loading...</div>
+    </div>
+
+    <button class="new-client-btn" onclick="openNewClientModal()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+      New Client
+    </button>
+  </aside>
+
+  <!-- ── Main ── -->
+  <main class="main">
+
+    <!-- No client selected -->
+    <div id="no-client" class="empty-state">
+      <div class="empty-icon">⚡</div>
+      <div class="empty-title">Select or create a client</div>
+      <div class="empty-sub">Pick a client from the sidebar or create a new one to start training your chatbot.</div>
+      <button class="btn btn-primary" onclick="openNewClientModal()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+        Create First Client
+      </button>
+    </div>
+
+    <!-- Client view -->
+    <div id="client-view" style="display:none; flex-direction:column; height:100vh; overflow:hidden;">
+
+      <div class="topbar">
+        <div>
+          <div class="topbar-title" id="cv-title">Client Name <span></span></div>
+          <div style="font-size:12px; color:var(--text3); margin-top:2px;" id="cv-id-label">client_id</div>
+        </div>
+        <span class="topbar-type" id="cv-type">—</span>
+        <div id="cv-ingesting" style="display:none;" class="ingesting-badge">
+          <span class="spin">⟳</span> Training in progress...
+        </div>
+        <button class="btn btn-ghost" id="btn-toggle-status" onclick="toggleClientStatus()" style="margin-left:auto;">⏸ Pause</button>
+        <button class="btn btn-danger" onclick="confirmDeleteClient()" style="margin-left:8px;">🗑 Delete</button>
+      </div>
+
+      <div class="content">
+
+        <!-- Stats -->
+        <div class="stats-row" id="cv-stats">
+          <div class="stat-card">
+            <div class="stat-label">Vectors Stored</div>
+            <div class="stat-value" id="stat-vectors">—</div>
+            <div class="stat-sub">Knowledge chunks</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Status</div>
+            <div class="stat-value" id="stat-status" style="font-size:16px; margin-top:4px;">—</div>
+            <div class="stat-sub" id="stat-model">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">LLM Model</div>
+            <div class="stat-value" id="stat-llm" style="font-size:13px; margin-top:6px; line-height:1.3;">—</div>
+            <div class="stat-sub">AI engine</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Top-K Retrieval</div>
+            <div class="stat-value" id="stat-topk">—</div>
+            <div class="stat-sub">Chunks per query</div>
+          </div>
+        </div>
+
+        <!-- Train chatbot -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon blue">🧠</div>
+            <div>
+              <div class="card-title">Train Chatbot</div>
+              <div class="card-sub">Add knowledge sources — each ingestion updates the bot instantly</div>
+            </div>
+          </div>
+
+          <div class="tabs">
+            <div class="tab active" onclick="switchTab('website')" id="tab-website">🌐 Website URL</div>
+            <div class="tab" onclick="switchTab('pdf')" id="tab-pdf">📄 File Upload</div>
+            <div class="tab" onclick="switchTab('text')" id="tab-text">✏️ Paste Text</div>
+          </div>
+
+          <div class="tab-content">
+
+            <!-- Website tab -->
+            <div class="tab-panel active" id="panel-website">
+              <div>
+                <label class="field-label">Website URL</label>
+                <input type="url" id="ingest-url" placeholder="https://client-website.com" />
+              </div>
+              <div style="font-size: 12px; color: var(--text3); line-height: 1.6;">
+                We'll automatically scrape up to 30 pages including services, pricing, FAQs, team, contact — and filter
+                out blogs and noise.
+              </div>
+              <button class="btn btn-primary" onclick="ingestWebsite()" id="btn-ingest-web">
+                🚀 Scrape & Train
+              </button>
+            </div>
+
+            <!-- PDF tab -->
+            <div class="tab-panel" id="panel-pdf">
+              <div class="drop-zone" id="drop-zone">
+                <input type="file" id="pdf-file" accept=".pdf,.docx,.xlsx,.csv" onchange="onFileSelect(event)">
+                <div class="drop-icon">📄</div>
+                <div class="drop-label">Drop file here or click to browse</div>
+                <div class="drop-sub">Menus, price lists, brochures, FAQs — any PDF, DOCX, CSV, Excel</div>
+                <div class="drop-selected" id="drop-selected" style="display:none;"></div>
+              </div>
+              <button class="btn btn-primary" onclick="ingestPDF()" id="btn-ingest-pdf">
+                📥 Upload & Train
+              </button>
+            </div>
+
+            <!-- Text tab -->
+            <div class="tab-panel" id="panel-text">
+              <div>
+                <label class="field-label">Source Label</label>
+                <input type="text" id="text-source" placeholder="e.g. pricing-2024, faq-doc">
+              </div>
+              <div style="flex-grow: 1;">
+                <label class="field-label">Paste Your Text</label>
+                <textarea id="text-content" rows="8" style="resize: vertical; min-height: 150px; width: 100%; box-sizing: border-box;" 
+                  placeholder="Paste any text here — service descriptions, pricing info, FAQs, policies..."></textarea>
+              </div>
+              <div style="margin-top: 10px; display: block;">
+                <button class="btn btn-primary" onclick="ingestText()" id="btn-ingest-text">
+                  ✅ Save & Train
+                </button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Progress + Log -->
+          <div id="ingest-progress" style="padding: 0 20px 20px; display:none;">
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:var(--text2);">
+              <span id="progress-label">Processing...</span>
+              <span id="progress-pct">0%</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="ingestion-log visible" id="ingest-log" style="margin-top:12px;"></div>
+          </div>
+        </div>
+
+        <!-- Chatbot snippet -->
+        <div class="card" id="snippet-card">
+          <div class="card-header">
+            <div class="card-icon green">🔗</div>
+            <div>
+              <div class="card-title">Embed on Client's Website</div>
+              <div class="card-sub">Paste this snippet before &lt;/body&gt; — chatbot appears instantly</div>
+            </div>
+            <div style="margin-left:auto; display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <span style="font-size:12px; color:var(--text3);">Color:</span>
+              <input type="color" id="brand-color" value="#2563eb" oninput="updateSnippet()"
+                style="width:42px; padding:2px 4px;">
+              <input type="text" id="brand-name" placeholder="Bot name..." value="" oninput="updateSnippet()"
+                style="width:140px; padding:8px 12px; font-size:13px;">
+              <input type="text" id="brand-logo" placeholder="Logo URL..." value="" oninput="updateSnippet()"
+                style="width:180px; padding:8px 12px; font-size:13px;">
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="snippet-box">
+              <button class="snippet-copy-btn" onclick="copySnippet()">Copy</button>
+              <pre id="snippet-output">Select a client to generate snippet...</pre>
+            </div>
+            <div style="margin-top: 12px; font-size: 12px; color: var(--text3); line-height: 1.7;">
+              💡 The client pastes this 6-line snippet and the chatbot appears. Change color and bot name above to match
+              their brand. Logo URL is optional.
+            </div>
+          </div>
+        </div>
+
+        <!-- Test chatbot inline -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-icon purple">💬</div>
+            <div>
+              <div class="card-title">Test Chatbot Live</div>
+              <div class="card-sub">Ask questions exactly as their customers would</div>
+            </div>
+          </div>
+          <div class="card-body" style="display:flex; flex-direction:column; gap:12px;">
+            <div id="test-messages"
+              style="min-height:120px; max-height:280px; overflow-y:auto; display:flex; flex-direction:column; gap:10px;">
+              <div style="font-size:13px; color:var(--text3); text-align:center; padding:24px 0;">Ask something to test
+                the chatbot...</div>
+            </div>
+            <div style="display:flex; gap:10px;">
+              <input type="text" id="test-query" placeholder="e.g. What are your prices? Do you offer home delivery?"
+                onkeydown="if(event.key==='Enter') testChat()">
+              <button class="btn btn-primary" onclick="testChat()" id="btn-test">Ask →</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ── New Client Modal ── -->
+  <div class="modal-overlay" id="modal-new" onclick="if(event.target===this)closeModal()">
+    <div class="modal">
+      <div class="modal-title">Create New Client</div>
+      <div class="modal-sub">Each client gets a completely isolated knowledge base and chatbot.</div>
+      <div class="modal-form">
+        <div>
+          <label class="field-label">Client ID <span style="color:var(--text3)">(lowercase, no spaces)</span></label>
+          <input type="text" id="new-client-id" placeholder="acme_dental" pattern="[a-z0-9_]+"
+            oninput="this.value=this.value.toLowerCase().replace(/[^a-z0-9_]/g,'')">
+        </div>
+        <div>
+          <label class="field-label">Business Name</label>
+          <input type="text" id="new-business-name" placeholder="Acme Dental Clinic">
+        </div>
+        <div class="form-row">
+          <div>
+            <label class="field-label">Business Type</label>
+            <select id="new-business-type">
+              <option>clinic</option>
+              <option>hospital</option>
+              <option>restaurant</option>
+              <option>salon</option>
+              <option>spa</option>
+              <option>hotel</option>
+              <option>school</option>
+              <option>gym</option>
+              <option>ecommerce</option>
+              <option>law firm</option>
+              <option>real estate</option>
+              <option>business</option>
+            </select>
+          </div>
+          <div>
+            <label class="field-label">Website URL <span style="color:var(--text3)">(optional)</span></label>
+            <input type="url" id="new-website-url" placeholder="https://their-site.com">
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label class="field-label">Owner Email <span style="color:var(--text3)">(lead notifications go here)</span></label>
+            <input type="text" id="new-owner-email" placeholder="owner@business.com">
+          </div>
+          <div>
+            <label class="field-label">Bot Name <span style="color:var(--text3)">(displayed in widget)</span></label>
+            <input type="text" id="new-bot-name" placeholder="e.g. SmileBot">
+          </div>
+        </div>
+        <div class="form-row">
+          <div>
+            <label class="field-label">Contact Email <span style="color:var(--text3)">(for customers)</span></label>
+            <input type="text" id="new-contact-email" placeholder="info@business.com">
+          </div>
+          <div>
+            <label class="field-label">Contact Phone</label>
+            <input type="text" id="new-contact-phone" placeholder="+91 98765 43210">
+          </div>
+        </div>
+        <div>
+          <label class="field-label">n8n Webhook URL <span style="color:var(--text3)">(for lead emails)</span></label>
+          <input type="url" id="new-webhook-url" placeholder="http://localhost:5678/webhook/rapidrag-lead">
+        </div>
+        <div>
+          <label class="field-label">Bot Logo <span style="color:var(--text3)">(circular avatar)</span></label>
+          <div class="logo-upload-wrapper">
+            <div class="logo-preview-circle" id="logo-preview-container">
+              <span class="logo-upload-icon" id="logo-upload-icon">📷</span>
+              <img id="logo-preview-img" src="" alt="logo">
+              <input type="file" class="logo-upload-input" accept="image/png, image/jpeg, image/webp" onchange="uploadLogoFile(event)">
+            </div>
+            <div style="flex: 1;">
+              <input type="hidden" id="new-logo-url" value="">
+              <div style="font-size: 12px; color: var(--text3); line-height: 1.5;">
+                Click camera icon to upload an image from your device.<br>
+                <span id="logo-upload-status">Square images work best.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="createClient()">
+          ✨ Create Client
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Toast container ── -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script>
+    // ─────────────────────────────────────────────
+    // State
+    // ─────────────────────────────────────────────
+    let API = window.location.origin;
+    let currentClient = null;
+    let clients = {};
+    let statusPollTimer = null;
+    let testSessionId = Math.random().toString(36).slice(2, 10);
+
+    // ─────────────────────────────────────────────
+    // Server health check
+    // ─────────────────────────────────────────────
+    async function checkServer() {
+      const dot = document.getElementById("server-dot");
+      const label = document.getElementById("server-label");
+      API = document.getElementById("server-url").value.trim().replace(/\/$/, "");
+      try {
+        const res = await fetch(API + "/health");
+        const d = await res.json();
+        dot.className = "server-dot online";
+        label.textContent = "Online · " + (d.embedding_model || "ready");
+        loadClients();
+      } catch {
+        dot.className = "server-dot offline";
+        label.textContent = "Offline — start server";
+      }
+    }
+
+    // FIX: "change" only fires on blur (unfocus). "input" fires as user types.
+    // Also added Enter key support for convenience.
+    document.getElementById("server-url").addEventListener("blur", checkServer);
+    document.getElementById("server-url").addEventListener("keydown", function (e) {
+      if (e.key === "Enter") checkServer();
+    });
+    setInterval(checkServer, 15000);
+    checkServer();
+
+    // ─────────────────────────────────────────────
+    // Load clients
+    // ─────────────────────────────────────────────
+    async function loadClients() {
+      try {
+        const res = await fetch(API + "/api/v1/clients");
+        const data = await res.json();
+        const list = document.getElementById("sidebar-clients");
+
+        if (!data.clients || data.clients.length === 0) {
+          list.innerHTML = `<div style="padding:8px 12px; font-size:12px; color:var(--text3);">No clients yet. Create one below.</div>`;
+          return;
+        }
+
+        // Load status for each client
+        const statuses = await Promise.allSettled(
+          data.clients.map(id => fetch(API + "/api/v1/" + id + "/status").then(r => r.json()))
+        );
+
+        list.innerHTML = "";
+        data.clients.forEach((id, i) => {
+          const st = statuses[i].status === "fulfilled" ? statuses[i].value : {};
+          clients[id] = st;
+          const item = document.createElement("div");
+          item.className = "client-item" + (currentClient === id ? " active" : "");
+          item.id = "sidebar-" + id;
+          item.onclick = () => selectClient(id);
+          item.innerHTML = `
+        <div class="client-avatar">${(st.business_name || id)[0]}</div>
+        <div class="client-info">
+          <div class="client-name">${st.business_name || id}</div>
+          <div class="client-meta">${st.business_type || ""}</div>
+        </div>
+        <div class="client-vectors">${st.vector_count || 0}v</div>
+      `;
+          list.appendChild(item);
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    // ─────────────────────────────────────────────
+    // Select client
+    // ─────────────────────────────────────────────
+    async function selectClient(id) {
+      currentClient = id;
+
+      // Update sidebar highlight
+      document.querySelectorAll(".client-item").forEach(el => el.classList.remove("active"));
+      const sideItem = document.getElementById("sidebar-" + id);
+      if (sideItem) sideItem.classList.add("active");
+
+      document.getElementById("no-client").style.display = "none";
+      const view = document.getElementById("client-view");
+      view.style.display = "flex";
+
+      await refreshClientView();
+
+      // Only show snippet if there are vectors
+      if (clients[currentClient] && clients[currentClient].vector_count > 0) {
+        document.getElementById("snippet-card").style.display = "block";
+        updateSnippet();
+      } else {
+        document.getElementById("snippet-card").style.display = "none";
+      }
+
+      testSessionId = Math.random().toString(36).slice(2, 10);
+      clearTestMessages();
+      startStatusPoll();
+    }
+
+    async function refreshClientView() {
+      if (!currentClient) return;
+      try {
+        const res = await fetch(API + "/api/v1/" + currentClient + "/status");
+        const d = await res.json();
+        clients[currentClient] = d;
+
+        document.getElementById("cv-title").innerHTML = d.business_name + ' <span style="color:var(--accent);">' + d.client_id + '</span>';
+        document.getElementById("cv-id-label").textContent = "ID: " + d.client_id;
+        document.getElementById("cv-type").textContent = d.business_type || "business";
+        document.getElementById("stat-vectors").textContent = (d.vector_count || 0).toLocaleString();
+        document.getElementById("stat-topk").textContent = d.top_k || 5;
+        document.getElementById("stat-llm").textContent = (d.llm_model || "").replace("groq/", "");
+        document.getElementById("stat-model").textContent = d.embedding_model || "all-MiniLM-L6-v2";
+
+        const ingesting = d.ingesting;
+        document.getElementById("cv-ingesting").style.display = ingesting ? "inline-flex" : "none";
+
+        const statusEl = document.getElementById("stat-status");
+        const toggleBtn = document.getElementById("btn-toggle-status");
+        
+        if (d.is_active === false) {
+          statusEl.textContent = "⏸ Paused";
+          statusEl.style.color = "var(--text3)";
+          toggleBtn.textContent = "▶ Activate";
+          toggleBtn.className = "btn btn-primary";
+          toggleBtn.style.marginLeft = "auto";
+        } else if (d.vector_count > 0) {
+          statusEl.textContent = "✅ Ready";
+          statusEl.style.color = "var(--green)";
+          document.getElementById("snippet-card").style.display = "block";
+          toggleBtn.innerHTML = "⏸ Pause";
+          toggleBtn.className = "btn btn-ghost";
+          toggleBtn.style.marginLeft = "auto";
+        } else {
+          statusEl.textContent = "⚠️ Empty";
+          statusEl.style.color = "var(--yellow)";
+          document.getElementById("snippet-card").style.display = "none";
+          toggleBtn.innerHTML = "⏸ Pause";
+          toggleBtn.className = "btn btn-ghost";
+          toggleBtn.style.marginLeft = "auto";
+        }
+
+        // Update sidebar vector count
+        const sideItem = document.getElementById("sidebar-" + currentClient);
+        if (sideItem) {
+          const vc = sideItem.querySelector(".client-vectors");
+          if (vc) vc.textContent = (d.vector_count || 0) + "v";
+        }
+
+        // Pre-fill brand name and logo
+        if (!document.getElementById("brand-name").value) {
+          document.getElementById("brand-name").value = d.business_name + " Assistant";
+        }
+        if (d.logo_url) {
+          document.getElementById("brand-logo").value = d.logo_url;
+        }
+        updateSnippet();
+      } catch (e) { }
+    }
+
+    function startStatusPoll() {
+      if (statusPollTimer) clearInterval(statusPollTimer);
+      statusPollTimer = setInterval(refreshClientView, 4000);
+    }
+
+    // ─────────────────────────────────────────────
+    // Tabs
+    // ─────────────────────────────────────────────
+    function switchTab(tab) {
+      ["website", "pdf", "text"].forEach(t => {
+        document.getElementById("tab-" + t).classList.toggle("active", t === tab);
+        document.getElementById("panel-" + t).classList.toggle("active", t === tab);
+      });
+    }
+
+    // ─────────────────────────────────────────────
+    // Ingestion — Website
+    // ─────────────────────────────────────────────
+    async function ingestWebsite() {
+      if (!currentClient) return toast("Select a client first", "error");
+      const url = document.getElementById("ingest-url").value.trim();
+      if (!url) return toast("Enter a website URL", "error");
+
+      const btn = document.getElementById("btn-ingest-web");
+      startProgress("Scraping website pages...");
+      btn.disabled = true;
+
+      addLog("info", "⟳ Scraping: " + url);
+
+      try {
+        const res = await fetch(API + "/api/v1/" + currentClient + "/ingest/website", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url })
+        });
+        if (!res.ok) {
+          let errMsg = `Server error ${res.status}`;
+          try { const errData = await res.json(); errMsg = errData.detail || errMsg; } catch { }
+          addLog("error", "✗ " + errMsg);
+          toast(errMsg, "error");
+          btn.disabled = false;
+          return;
+        }
+        const d = await res.json();
+
+        if (d.status === "failed") {
+          const errs = Array.isArray(d.errors) ? d.errors : [d.errors || "Unknown error"];
+          addLog("error", "✗ Scraping failed: " + errs.join(", "));
+          addLog("info", "Tip: Make sure the URL is accessible and has text content");
+          toast("Ingestion failed — " + errs[0], "error");
+        } else {
+          setProgress(100, "Training complete!");
+          addLog("success", `✓ Pages scraped: ${d.pages_scraped || 0}`);
+          addLog("success", `✓ Chunks created: ${d.chunks_created || 0}`);
+          addLog("success", `✓ Vectors stored: ${d.vectors_stored || 0}`);
+          addLog("info", "Model: " + (d.embedding_model || "all-MiniLM-L6-v2"));
+          if ((d.vectors_stored || 0) === 0) {
+            addLog("error", "⚠ 0 vectors — site may be blocking scraper or has no text");
+            toast("Warning: 0 vectors. Try a different URL or use PDF/text tab.", "error");
+          } else {
+            toast("Training complete! " + d.vectors_stored + " vectors ✓", "success");
+          }
+          await refreshClientView();
+          await loadClients();
+        }
+      } catch (e) {
+        addLog("error", "✗ Error: " + e.message);
+        toast("Error: " + e.message, "error");
+      }
+
+      btn.disabled = false;
+    }
+
+    // ─────────────────────────────────────────────
+    // Ingestion — PDF
+    // ─────────────────────────────────────────────
+    let selectedFile = null;
+
+    function onFileSelect(e) {
+      selectedFile = e.target.files[0];
+      if (selectedFile) {
+        const ds = document.getElementById("drop-selected");
+        ds.textContent = "📄 " + selectedFile.name + " (" + (selectedFile.size / 1024).toFixed(0) + " KB)";
+        ds.style.display = "block";
+      }
+    }
+
+    // Drag and drop
+    const dz = document.getElementById("drop-zone");
+    dz.addEventListener("dragover", e => { e.preventDefault(); dz.classList.add("drag-over"); });
+    dz.addEventListener("dragleave", () => dz.classList.remove("drag-over"));
+    dz.addEventListener("drop", e => {
+      e.preventDefault();
+      dz.classList.remove("drag-over");
+      const file = e.dataTransfer.files[0];
+      if (file && (file.type === "application/pdf" || file.name.match(/\.(pdf|docx|xlsx|xls|csv)$/i))) {
+        selectedFile = file;
+        const ds = document.getElementById("drop-selected");
+        ds.textContent = "📄 " + file.name + " (" + (file.size / 1024).toFixed(0) + " KB)";
+        ds.style.display = "block";
+      } else {
+        toast("Unsupported file format", "error");
+      }
+    });
+
+    async function ingestPDF() {
+      if (!currentClient) return toast("Select a client first", "error");
+      if (!selectedFile) return toast("Select a file first", "error");
+
+      const btn = document.getElementById("btn-ingest-pdf");
+      startProgress("Uploading & extracting file...");
+      btn.disabled = true;
+
+      addLog("info", "⟳ Uploading: " + selectedFile.name);
+
+      const form = new FormData();
+      form.append("file", selectedFile);
+
+      try {
+        const res = await fetch(API + "/api/v1/" + currentClient + "/ingest/file", {
+          method: "POST",
+          body: form
+        });
+        if (!res.ok) {
+          let errMsg = `Server error ${res.status}`;
+          try { const errData = await res.json(); errMsg = errData.detail || errMsg; } catch { }
+          addLog("error", "✗ " + errMsg);
+          toast(errMsg, "error");
+          btn.disabled = false;
+          return;
+        }
+        const d = await res.json();
+
+        if (d.status === "failed") {
+          const errs = Array.isArray(d.errors) ? d.errors : [d.errors || "Unknown error"];
+          addLog("error", "✗ File failed: " + errs.join(", "));
+          toast("File ingestion failed", "error");
+        } else {
+          setProgress(100, "File trained!");
+          addLog("success", `✓ Pages parsed: ${d.pages_parsed || 0}`);
+          addLog("success", `✓ Chunks created: ${d.chunks_created || 0}`);
+          addLog("success", `✓ Vectors stored: ${d.vectors_stored || 0}`);
+          if ((d.vectors_stored || 0) === 0) {
+            toast("Warning: 0 vectors. File may be image-only or unreadable.", "error");
+          } else {
+            toast("File trained! " + d.vectors_stored + " vectors ✓", "success");
+          }
+          await refreshClientView();
+          await loadClients();
+        }
+      } catch (e) {
+        addLog("error", "✗ Error: " + e.message);
+        toast("Error: " + e.message, "error");
+      }
+
+      btn.disabled = false;
+    }
+
+    // ─────────────────────────────────────────────
+    // Ingestion — Text
+    // ─────────────────────────────────────────────
+    async function ingestText() {
+      if (!currentClient) return toast("Select a client first", "error");
+      const text = document.getElementById("text-content").value.trim();
+      const source = document.getElementById("text-source").value.trim() || "manual-text";
+      if (!text) return toast("Paste some text first", "error");
+
+      const btn = document.getElementById("btn-ingest-text");
+      startProgress("Processing text...");
+      btn.disabled = true;
+
+      addLog("info", "⟳ Processing " + text.length + " characters...");
+
+      // We call the website endpoint by saving text as a temp endpoint
+      // Instead, we use a trick: call our backend's PDF ingest with a text blob
+      // Actually we POST to a special endpoint — but we don't have /ingest/text in the backend.
+      // So we create a PDF-like approach: send as a form with a .txt blob file.
+      const blob = new Blob([text], { type: "application/octet-stream" });
+      const file = new File([blob], source + ".txt", { type: "application/octet-stream" });
+      const form = new FormData();
+      form.append("file", file);
+
+      // We'll use the PDF endpoint since PyMuPDF won't work on .txt.
+      // Better: send to a custom text ingest endpoint.
+      // Since our backend doesn't have one, we'll fake it via a JSON POST to website ingest
+      // using a data: URL — but that won't work either.
+      // REAL solution: we need a /ingest/text endpoint. Let's call it properly.
+      // For now we chunk and send — but our backend needs this endpoint.
+      // We'll document this clearly and hit the PDF endpoint with a proper txt.
+      // Actually let's just directly call ingest/text which we'll add.
+
+      try {
+        const res = await fetch(API + "/api/v1/" + currentClient + "/ingest/text", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ text, source })
+        });
+
+        if (!res.ok) {
+          // Fallback: not implemented yet, show message
+          addLog("error", "✗ /ingest/text endpoint not found. See LAUNCH_GUIDE to add it.");
+          toast("Add /ingest/text endpoint to main.py (see guide)", "error");
+          btn.disabled = false;
+          return;
+        }
+
+        const d = await res.json();
+        if (d.status === "failed") {
+          addLog("error", "✗ Failed: " + (d.errors || []).join(", "));
+          toast("Text ingestion failed", "error");
+        } else {
+          setProgress(100, "Text trained!");
+          addLog("success", `✓ Chunks created: ${d.chunks_created}`);
+          addLog("success", `✓ Vectors stored: ${d.vectors_stored}`);
+          toast("Text trained successfully!", "success");
+          await refreshClientView();
+          await loadClients();
+        }
+      } catch (e) {
+        addLog("error", "✗ Error: " + e.message);
+        toast("Error: " + e.message, "error");
+      }
+
+      btn.disabled = false;
+    }
+
+    // ─────────────────────────────────────────────
+    // Progress helpers
+    // ─────────────────────────────────────────────
+    let progressTimer = null;
+
+    function startProgress(label) {
+      document.getElementById("ingest-progress").style.display = "block";
+      document.getElementById("progress-label").textContent = label;
+      document.getElementById("progress-pct").textContent = "0%";
+      document.getElementById("progress-fill").style.width = "0%";
+      document.getElementById("ingest-log").innerHTML = "";
+
+      let pct = 0;
+      if (progressTimer) clearInterval(progressTimer);
+      progressTimer = setInterval(() => {
+        pct = Math.min(pct + Math.random() * 8, 88);
+        document.getElementById("progress-fill").style.width = pct + "%";
+        document.getElementById("progress-pct").textContent = Math.floor(pct) + "%";
+      }, 600);
+    }
+
+    function setProgress(pct, label) {
+      if (progressTimer) clearInterval(progressTimer);
+      document.getElementById("progress-fill").style.width = pct + "%";
+      document.getElementById("progress-pct").textContent = pct + "%";
+      if (label) document.getElementById("progress-label").textContent = label;
+    }
+
+    function addLog(type, msg) {
+      const log = document.getElementById("ingest-log");
+      const line = document.createElement("div");
+      line.className = "log-line " + type;
+      line.textContent = msg;
+      log.appendChild(line);
+      log.scrollTop = log.scrollHeight;
+    }
+
+    // ─────────────────────────────────────────────
+    // Test chat
+    // ─────────────────────────────────────────────
+    function clearTestMessages() {
+      document.getElementById("test-messages").innerHTML =
+        `<div style="font-size:13px; color:var(--text3); text-align:center; padding:24px 0;">Ask something to test the chatbot...</div>`;
+    }
+
+    async function testChat() {
+      if (!currentClient) return toast("Select a client first", "error");
+      const q = document.getElementById("test-query").value.trim();
+      if (!q) return;
+
+      const container = document.getElementById("test-messages");
+
+      // Clear placeholder
+      const placeholder = container.querySelector("div[style*='text-align:center']");
+      if (placeholder) placeholder.remove();
+
+      // User bubble
+      const userDiv = document.createElement("div");
+      userDiv.style.cssText = "align-self:flex-end; max-width:80%;";
+      userDiv.innerHTML = `<div style="background:var(--accent);color:#000;padding:9px 14px;border-radius:16px 16px 4px 16px;font-size:13px;font-weight:500;">${escHtml(q)}</div>`;
+      container.appendChild(userDiv);
+      container.scrollTop = container.scrollHeight;
+
+      document.getElementById("test-query").value = "";
+      document.getElementById("btn-test").disabled = true;
+
+      // Typing indicator
+      const typingDiv = document.createElement("div");
+      typingDiv.style.cssText = "align-self:flex-start;";
+      typingDiv.innerHTML = `<div style="background:var(--surface3);padding:10px 14px;border-radius:16px 16px 16px 4px;font-size:13px;color:var(--text2);">
+    <span class="spin" style="display:inline-block;">⟳</span> Thinking...
+  </div>`;
+      container.appendChild(typingDiv);
+      container.scrollTop = container.scrollHeight;
+
+      const t0 = Date.now();
+      try {
+        const res = await fetch(API + "/api/v1/" + currentClient + "/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: q, session_id: "preview_" + testSessionId })
+        });
+        const d = await res.json();
+        const ms = Date.now() - t0;
+
+        typingDiv.remove();
+
+        const meta = [
+          d.intent !== "unknown" ? `intent: ${d.intent}` : null,
+          d.lead ? "🔥 lead" : null,
+          `${(d.confidence * 100).toFixed(0)}% confidence`,
+          `${ms}ms`,
+          d.cache_hit ? "⚡ cached" : null,
+        ].filter(Boolean).join(" · ");
+
+        const botDiv = document.createElement("div");
+        botDiv.style.cssText = "align-self:flex-start; max-width:85%; display:flex; flex-direction:column; gap:4px;";
+        botDiv.innerHTML = `
+      <div style="background:var(--surface3);padding:10px 14px;border-radius:16px 16px 16px 4px;font-size:13px;line-height:1.6;color:var(--text);">${escHtml(d.reply || "No response")}</div>
+      <div style="font-size:10px;color:var(--text3);padding:0 4px;font-family:'DM Mono',monospace;">${escHtml(meta)}</div>
+    `;
+        container.appendChild(botDiv);
+        container.scrollTop = container.scrollHeight;
+
+      } catch (e) {
+        typingDiv.remove();
+        const errDiv = document.createElement("div");
+        errDiv.style.cssText = "align-self:flex-start;";
+        errDiv.innerHTML = `<div style="background:rgba(255,82,82,0.1);padding:9px 14px;border-radius:16px 16px 16px 4px;font-size:13px;color:var(--red);">Error: ${escHtml(e.message)}</div>`;
+        container.appendChild(errDiv);
+        container.scrollTop = container.scrollHeight;
+      }
+
+      document.getElementById("btn-test").disabled = false;
+      document.getElementById("test-query").focus();
+    }
+
+    document.getElementById("test-query").addEventListener("keydown", e => {
+      if (e.key === "Enter") testChat();
+    });
+
+    function escHtml(s) {
+      return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
+    }
+
+    // ─────────────────────────────────────────────
+    // Snippet generation
+    // ─────────────────────────────────────────────
+    function updateSnippet() {
+      if (!currentClient) return;
+      const color = document.getElementById("brand-color").value;
+      const name = document.getElementById("brand-name").value || (clients[currentClient]?.business_name + " Assistant") || "Assistant";
+      const logo = document.getElementById("brand-logo").value || "";
+
+      const snippet = `<!-- RapidRAG Chatbot — paste before </body> -->
+<script>
+  window.RAPIDRAG_CLIENT  = "${currentClient}";
+  window.RAPIDRAG_API     = "${API}";
+  window.RAPIDRAG_NAME    = "${name}";
+  window.RAPIDRAG_COLOR   = "${color}";
+  window.RAPIDRAG_LOGO    = "${logo}";
+  window.RAPIDRAG_GREETING = "Hi! 👋 How can I help you today?";
+<\/script>
+<script src="${API}/static/widget.js" async><\/script>`;
+
+      document.getElementById("snippet-output").textContent = snippet;
+    }
+
+    function copySnippet() {
+      const text = document.getElementById("snippet-output").textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.querySelector(".snippet-copy-btn");
+        btn.textContent = "✓ Copied!";
+        setTimeout(() => btn.textContent = "Copy", 2000);
+        toast("Snippet copied to clipboard!", "success");
+      });
+    }
+
+    // ─────────────────────────────────────────────
+    // New client modal
+    // ─────────────────────────────────────────────
+    function openNewClientModal() {
+      document.getElementById("modal-new").classList.add("open");
+      setTimeout(() => document.getElementById("new-client-id").focus(), 100);
+    }
+
+    function closeModal() {
+      document.getElementById("modal-new").classList.remove("open");
+    }
+
+    async function uploadLogoFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const statusEl = document.getElementById("logo-upload-status");
+      statusEl.textContent = "Uploading...";
+      statusEl.style.color = "var(--text2)";
+
+      const form = new FormData();
+      form.append("file", file);
+
+      try {
+        const res = await fetch(API + "/api/v1/upload-logo", {
+          method: "POST",
+          body: form
+        });
+        
+        if (!res.ok) {
+          throw new Error("Upload failed");
+        }
+        
+        const data = await res.json();
+        
+        // Update hidden input
+        const fullUrl = API + data.url;
+        document.getElementById("new-logo-url").value = fullUrl;
+        
+        // Update UI
+        document.getElementById("logo-upload-icon").style.display = "none";
+        const img = document.getElementById("logo-preview-img");
+        img.src = fullUrl;
+        img.style.display = "block";
+        
+        statusEl.textContent = "Logo uploaded ✓";
+        statusEl.style.color = "var(--green)";
+      } catch (e) {
+        statusEl.textContent = "Upload failed. Try again.";
+        statusEl.style.color = "var(--red)";
+        toast("Logo upload failed: " + e.message, "error");
+      }
+    }
+
+    async function createClient() {
+      const id = document.getElementById("new-client-id").value.trim();
+      const name = document.getElementById("new-business-name").value.trim();
+      const type = document.getElementById("new-business-type").value;
+      const url = document.getElementById("new-website-url").value.trim();
+      const ownerEmail = document.getElementById("new-owner-email").value.trim();
+      const botName = document.getElementById("new-bot-name").value.trim();
+      const contactEmail = document.getElementById("new-contact-email").value.trim();
+      const contactPhone = document.getElementById("new-contact-phone").value.trim();
+      const webhookUrl = document.getElementById("new-webhook-url").value.trim();
+      const logoUrl = document.getElementById("new-logo-url").value.trim();
+
+      if (!id || !name) return toast("Client ID and business name are required", "error");
+      if (!/^[a-z0-9_]+$/.test(id)) return toast("Client ID: only lowercase letters, numbers, underscores", "error");
+
+      const payload = { client_id: id, business_name: name, business_type: type, website_url: url };
+      if (ownerEmail) payload.owner_email = ownerEmail;
+      if (botName) payload.bot_name = botName;
+      if (contactEmail) payload.contact_email = contactEmail;
+      if (contactPhone) payload.contact_phone = contactPhone;
+      if (webhookUrl) payload.n8n_webhook_url = webhookUrl;
+      if (logoUrl) payload.logo_url = logoUrl;
+
+      try {
+        const res = await fetch(API + "/api/v1/clients", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload)
+        });
+        const d = await res.json();
+
+        if (res.status === 409) {
+          toast("Client '" + id + "' already exists", "error");
+          return;
+        }
+        if (!res.ok) {
+          toast("Error: " + (d.detail || "Unknown error"), "error");
+          return;
+        }
+
+        toast("Client created: " + id, "success");
+        closeModal();
+        // Clear all fields
+        ["new-client-id","new-business-name","new-website-url","new-owner-email","new-bot-name","new-contact-email","new-contact-phone","new-webhook-url","new-logo-url"].forEach(fid => document.getElementById(fid).value = "");
+        document.getElementById("logo-preview-img").style.display = "none";
+        document.getElementById("logo-preview-img").src = "";
+        document.getElementById("logo-upload-icon").style.display = "block";
+        document.getElementById("logo-upload-status").textContent = "Square images work best.";
+        document.getElementById("logo-upload-status").style.color = "var(--text3)";
+        await loadClients();
+        await selectClient(id);
+
+        // Pre-fill snippet fields with what was entered
+        if (botName) document.getElementById("brand-name").value = botName;
+        if (logoUrl) document.getElementById("brand-logo").value = logoUrl;
+        updateSnippet();
+      } catch (e) {
+        toast("Error: " + e.message, "error");
+      }
+    }
+
+    // ─────────────────────────────────────────────
+    // Delete client
+    // ─────────────────────────────────────────────
+    function confirmDeleteClient() {
+      if (!currentClient) return;
+      const name = clients[currentClient]?.business_name || currentClient;
+      if (!confirm(`Delete client "${name}" (${currentClient})?\n\nThis will remove ALL their data, vectors, and cache. This cannot be undone.`)) return;
+      deleteClient();
+    }
+
+    async function deleteClient() {
+      // Our backend doesn't expose a DELETE /clients/{id} endpoint yet.
+      // We'll clear cache and show a message.
+      try {
+        await fetch(API + "/api/v1/" + currentClient + "/cache", { method: "DELETE" });
+        toast("Cache cleared. To fully delete, remove the 'clients/" + currentClient + "' folder from disk.", "success");
+      } catch (e) { }
+    }
+
+    // ─────────────────────────────────────────────
+    // Toggle Client Status
+    // ─────────────────────────────────────────────
+    async function toggleClientStatus() {
+      if (!currentClient) return;
+      const st = clients[currentClient];
+      // If undefined, default to true, so toggle becomes false
+      const isActiveNow = st.is_active !== false; 
+      const newStatus = !isActiveNow;
+      
+      const btn = document.getElementById("btn-toggle-status");
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(API + "/api/v1/" + currentClient + "/toggle-status", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Authorization": "Bearer " + (window.ADMIN_KEY || "") },
+          body: JSON.stringify({ is_active: newStatus })
+        });
+        
+        if (!res.ok) {
+          const d = await res.json();
+          toast("Failed to update status: " + (d.detail || "Error"), "error");
+          btn.disabled = false;
+          return;
+        }
+        
+        toast(newStatus ? "Client activated" : "Client paused", "success");
+        await refreshClientView();
+      } catch (e) {
+        toast("Error: " + e.message, "error");
+      }
+      btn.disabled = false;
+    }
+
+    // ─────────────────────────────────────────────
+    // Toast
+    // ─────────────────────────────────────────────
+    function toast(msg, type = "success") {
+      const container = document.getElementById("toast-container");
+      const t = document.createElement("div");
+      t.className = "toast " + type;
+      t.innerHTML = (type === "success" ? "✓ " : type === "error" ? "✗ " : "") + msg;
+      container.appendChild(t);
+      setTimeout(() => t.remove(), 3500);
+    }
+
+    // ─────────────────────────────────────────────
+    // Enter key on modal
+    // ─────────────────────────────────────────────
+    document.addEventListener("keydown", e => {
+      if (e.key === "Escape") closeModal();
+      if (e.key === "Enter" && document.getElementById("modal-new").classList.contains("open")) {
+        if (document.activeElement !== document.querySelector(".modal-footer button")) {
+          createClient();
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>

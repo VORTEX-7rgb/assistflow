@@ -1,0 +1,54 @@
+{
+  "name": "RapidRAG Lead Notifications",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "rapidrag-lead",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "id": "webhook-node-001",
+      "name": "Lead Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [250, 300],
+      "webhookId": "rapidrag-lead"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.body.owner_email }}",
+        "subject": "={{ $json.body.lead_quality }} New Lead — {{ $json.body.business_name }} | {{ $json.body.customer.name }}",
+        "emailType": "html",
+        "html": "={{ '<div style=\"font-family: Segoe UI, Arial, sans-serif; max-width: 640px; margin: 0 auto; background: #0a0e17; color: #e4e8f1; border-radius: 12px; overflow: hidden; border: 1px solid #1e293b;\"><div style=\"background: linear-gradient(135deg, #0ea5e9, #6366f1); padding: 28px 32px;\"><h1 style=\"margin: 0; font-size: 22px; color: #fff;\">' + $json.body.lead_quality + ' New Lead Captured</h1><p style=\"margin: 8px 0 0; font-size: 13px; color: rgba(255,255,255,0.85);\">' + $json.body.metadata.timestamp + ' • ' + $json.body.business_name + '</p></div><div style=\"padding: 22px 32px; background: #111827; border-bottom: 1px solid #1e293b;\"><p style=\"margin: 0; font-size: 15px; line-height: 1.7; color: #cbd5e1;\">' + $json.body.summary + '</p></div><div style=\"padding: 24px 32px;\"><h3 style=\"margin: 0 0 16px; font-size: 13px; color: #0ea5e9; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700;\">Customer Details</h3><table style=\"width: 100%; font-size: 14px; border-collapse: collapse;\"><tr><td style=\"padding: 8px 0; color: #64748b; width: 130px;\">Name</td><td style=\"color: #f1f5f9; font-weight: 600;\">' + $json.body.customer.name + '</td></tr><tr><td style=\"padding: 8px 0; color: #64748b;\">Phone</td><td style=\"color: #f1f5f9; font-weight: 600;\">' + $json.body.customer.phone + '</td></tr><tr><td style=\"padding: 8px 0; color: #64748b;\">Requirement</td><td style=\"color: #e2e8f0;\">' + $json.body.customer.requirement + '</td></tr><tr><td style=\"padding: 8px 0; color: #64748b;\">Budget</td><td style=\"color: #e2e8f0;\">' + $json.body.customer.budget + '</td></tr></table></div><div style=\"padding: 0 32px 24px;\"><h3 style=\"margin: 0 0 16px; font-size: 13px; color: #0ea5e9; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700;\">Lead Analysis</h3><table style=\"width: 100%; font-size: 14px; border-collapse: collapse;\"><tr><td style=\"padding: 8px 0; color: #64748b; width: 130px;\">Intent</td><td style=\"color: #e2e8f0;\">' + $json.body.conversation.intent + '</td></tr><tr><td style=\"padding: 8px 0; color: #64748b;\">Confidence</td><td style=\"color: #e2e8f0;\">' + $json.body.conversation.confidence_score + '</td></tr><tr><td style=\"padding: 8px 0; color: #64748b;\">Messages</td><td style=\"color: #e2e8f0;\">' + $json.body.conversation.total_messages + ' messages exchanged</td></tr></table></div><div style=\"padding: 0 32px 28px;\"><h3 style=\"margin: 0 0 16px; font-size: 13px; color: #0ea5e9; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700;\">Conversation</h3><div style=\"background: #060a12; border: 1px solid #1e293b; border-radius: 10px; padding: 20px; font-size: 13px; line-height: 2; white-space: pre-wrap; color: #94a3b8;\">' + $json.body.conversation.transcript + '</div></div><div style=\"padding: 18px 32px; background: #111827; border-top: 1px solid #1e293b; text-align: center;\"><p style=\"margin: 0; font-size: 11px; color: #475569;\">Powered by RapidRAG • ' + $json.body.metadata.source_channel + '</p></div></div>' }}",
+        "options": {}
+      },
+      "id": "email-node-001",
+      "name": "Send Lead Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [520, 300],
+      "credentials": {}
+    }
+  ],
+  "connections": {
+    "Lead Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send Lead Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "pinData": {}
+}

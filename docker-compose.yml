@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  rapidrag:
+    build: .
+    container_name: rapidrag_backend
+    restart: always
+    env_file: .env
+    volumes:
+      - ./clients:/app/clients
+      - ./logs:/app/logs
+      - ./cache:/app/cache
+    ports:
+      - "8000:8000"
+    networks:
+      - rapidrag-network
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n
+    container_name: n8n_automations
+    restart: always
+    environment:
+      # Change this to your n8n domain
+      - N8N_HOST=n8n.yourdomain.com
+      - WEBHOOK_URL=https://n8n.yourdomain.com/
+      - GENERIC_TIMEZONE=UTC
+    volumes:
+      - n8n_data:/home/node/.n8n
+    ports:
+      - "5678:5678"
+    networks:
+      - rapidrag-network
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: caddy_proxy
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - rapidrag-network
+
+volumes:
+  n8n_data:
+  caddy_data:
+  caddy_config:
+
+networks:
+  rapidrag-network:
+    driver: bridge

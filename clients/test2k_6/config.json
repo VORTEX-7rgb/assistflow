@@ -1,0 +1,22 @@
+{
+  "client_id": "test2k_6",
+  "business_name": "Test Business",
+  "business_type": "business",
+  "website_url": "",
+  "contact_email": "",
+  "contact_phone": "",
+  "n8n_webhook_url": "",
+  "owner_email": "",
+  "bot_name": "Assistant",
+  "instagram_page_id": "",
+  "manychat_api_key": "",
+  "instagram_access_token": "",
+  "instagram_channel": "",
+  "embedding_model": "all-MiniLM-L6-v2",
+  "llm_model": "groq/llama-3.1-8b-instant",
+  "similarity_threshold": 0.35,
+  "top_k": 5,
+  "max_response_tokens": 500,
+  "prompt_version": 1,
+  "cache_ttl": 3600
+}

@@ -1,0 +1,10 @@
+# Replace these domains with your actual domains
+# Ensure your DNS A Records point to the server's IP address
+
+api.yourdomain.com {
+    reverse_proxy rapidrag:8000
+}
+
+n8n.yourdomain.com {
+    reverse_proxy n8n:5678
+}

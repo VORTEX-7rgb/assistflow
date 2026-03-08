@@ -1,0 +1,20 @@
+{
+  "client_id": "wwe",
+  "business_name": "wwe",
+  "business_type": "business",
+  "website_url": "https://www.wwe.com/",
+  "contact_email": "",
+  "contact_phone": "",
+  "n8n_webhook_url": "http://localhost:5678/webhook/rapidrag-lead",
+  "owner_email": "mraradhysinghchauhan@gmail.com",
+  "bot_name": "Assistant",
+  "instagram_page_id": "",
+  "manychat_api_key": "",
+  "embedding_model": "all-MiniLM-L6-v2",
+  "llm_model": "groq/llama-3.1-8b-instant",
+  "similarity_threshold": 0.35,
+  "top_k": 5,
+  "max_response_tokens": 500,
+  "prompt_version": 1,
+  "cache_ttl": 3600
+}

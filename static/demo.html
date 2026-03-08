@@ -1,0 +1,466 @@
+<style type="text/css">
+	.page-container{
+		overflow: auto;
+	}
+</style>
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- RapidRAG Chatbot — paste before </body> -->
+<script>
+  window.RAPIDRAG_CLIENT  = "stmary";
+  window.RAPIDRAG_API     = window.location.origin;
+  window.RAPIDRAG_NAME    = "ST MARYS SCHOOL Assistant";
+  window.RAPIDRAG_COLOR   = "#2563eb";
+  window.RAPIDRAG_LOGO    = "";
+  window.RAPIDRAG_GREETING = "Hi! 👋 How can I help you today?";
+</script>
+<script src="/static/widget.js" async></script>
+
+
+
+<head>
+  <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="St. Mary's School, Mainpuri, stands as a testament to the visionary zeal and educational acumen of its founders who, in the year 1985, embarked on a mission to shape the future of Mainpuri through the corridors of knowledge. The genesis of this educational institution is rooted in the collective wisdom of seasoned educationists and practical visionaries, individuals whose extensive experience in the realm of education provided the bedrock for a journey that would span decades."> 
+    
+    <title>St. Mary's School</title>
+    <link rel="icon" href="img/logo.png" type="image/icon">
+    <link rel="stylesheet" href="ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/animate.css">
+    <link rel="stylesheet" href="css/owlcarousel.min.css">
+    <link rel="stylesheet" href="css/slick.css">
+    <link rel="stylesheet" href="css/magnific-popup.css">
+    <link rel="stylesheet" href="css/metismenu.css">
+    <link rel="stylesheet" href="css/nice-select2.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/fullpage-menu.css">
+    <link rel="stylesheet" href="css/style.css?v1=1.3.2">
+
+
+    <style type="">
+        #Subheader {
+    padding: 150px 0px 40px 0px;
+       background-image: url(img/innerpage-banner-1.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+}
+
+#Subheader .title {
+    font-size: 22px;
+    line-height: 10px;
+    font-weight: 500;
+    letter-spacing: 1px;
+}
+#Subheader .title {
+    font-family: "Manrope", Arial, Tahoma, sans-serif;
+}
+#Subheader .title {
+    color: #0d3f6d;
+}
+#Subheader .title {
+    padding: 5px 20px;
+    width: auto;
+    border-left: 4px #f1be45 solid;
+}
+.box-set{ margin: 70px auto; border-radius: 20px; padding: 50px;box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;}
+
+        @media only screen and (max-width: 768px) {
+            .main-menu{ display: none !important; }
+            .mobi-1{ display: block !important; }
+            .mobi-2{ right: 0 !important }
+            .mobi-3{ width: 300px !important; height: 300px !important }
+            .map{     transform: skew(0deg, 0deg) !important; border: none !important; }
+            .map iframe{     transform: skew(0deg, 0deg) !important; }
+            .px-right {     padding-right: 50px !important; }
+            .box-set{ padding: 0 !important }
+            .table-responsive{ overflow: scroll; } .new-pe{     padding-right: 20!important }.hews-q{ font-size: 40px !important ;text-align: center;} .desc { margin: 20px auto !important; width: 100% !important; } 
+            .paerad{ padding: 0 10px!important } .img-set{ max-width: 280px !important }
+            .span_d_Set{ font-size: 22px !important } .m-p_Set{ margin-top: 30px } .life_f_set{ font-size: 26px !important; text-align: center; } .maddsadfdsc{ padding-top: 0 !important }
+            .sdfdsfgfghhfg{ font-size: 8px !important }
+            .vcxzvcxv{font-size: 9px !important;line-height: 1.1 !important;}
+            .wwwwqqs{     padding: 2px !important; }
+        }
+        .breadcrumbs a {     color: #4e4e4e !important; }
+        .title1 {
+    color: #ec7726;
+    padding-bottom: 18px;
+    background: url(img/t2-bg.png) left bottom no-repeat;
+    font-size: 25px;
+}
+
+.title1 {
+    margin: 0px 0 15px;
+}
+.pages-p {
+    text-align: justify;
+    color: #4e4e4e;
+}
+    </style>
+   
+
+
+  <style type="text/css">
+    @media(max-width:767px) {
+      .sec-text {
+        padding: 0 10px;
+      }
+
+      .desc {
+        width: inherit !important;
+      }
+
+      .desc button {
+        border-top-right-radius: 0px;
+        border-top-left-radius: 0px;
+        border-color: inherit !important;
+      }
+
+      .mobile_view_data {
+        margin: 0 auto !important
+      }
+
+      .mobile_viewText img {
+        display: none;
+      }
+
+      .mobile_viewText .commlefToright::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        font-size: 15px;
+        background-image: url(img/quote1.png);
+        background-size: 100% 100%;
+        width: 15px;
+        height: 15px
+      }
+
+      .mobile_viewText .commlefToright::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        right: 10px;
+        font-size: 15px;
+        background-image: url(img/quote2.png);
+        background-size: 100% 100%;
+        width: 15px;
+        height: 15px
+      }
+
+      .mobile_viewText .commlefToright {
+        line-height: 1.5 !important;
+        font-size: 17px !important;
+        padding: 0 20px;
+        text-align: justify !important;
+        position: relative
+      }
+
+      .Moblie_section_padding {
+        padding: 0
+      }
+
+      .m-p_Set {
+        margin: 0 !important
+      }
+
+      .Moblie_section_padding .sub-title,
+      .paerad {
+        margin: 0 !important
+      }
+
+      .mobile_viewText p:nth-of-type(2) {
+        padding-left: 15px;
+      }
+
+      .mobile_viewText a:nth-of-type(1) {
+        text-align: -webkit-center;
+      }
+
+      .mobile_viewText {
+        text-align: center;
+        padding: 10px
+      }
+
+    }
+
+
+    .scrolingBarNotofication::-webkit-scrollbar {
+      -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+      border-radius: 10px;
+      background-color: #05036e;
+      width: 10px;
+    }
+
+    .scrolingBarNotofication {
+      max-height: 440px;
+      overflow: auto;
+    }
+  </style>
+</head>
+
+<body class="body-wrapper">
+  <style type="text/css">
+    p{font-family: Poppins, sans-serif !important;}
+    a{font-family: Poppins, sans-serif !important;}
+</style>
+    <header class="header-1">
+        <div class="container-fluid position-relative">
+            <div class="row align-items-center justify-content-between">
+                <div class="col-lg-12 d-none d-lg-block  col-sm-12 col-md-12 col-12">
+                    <div class="logo" id="sc-t" style="display: flex; justify-content: center; padding: 10px 0">
+                        <a href="index.php" class="" style="display: flex; justify-content: center; align-items: center;">
+                            <img src="img/logo.png" class="img-fluid" alt="" style="max-width: 100PX;margin-right: 10px">
+                          
+                           <h1 class="heading_name" style="text-transform: uppercase;color: #05036e; font-family: 'Times New Roman', serif !important; font-size: 50px; margin-top: 12px">S<span style="font-size: 40px;font-family: 'Times New Roman', serif !important;">t</span>. Mary's School</h1>
+                        </a>
+                    </div>
+                </div>
+               
+                <div class="row">
+                      <div class="col-12">
+                            <div class="main-menu text-right d-flex align-items-center justify-content-center">
+                                <ul class="">
+                                    <li><a href="index.php">Home</a></li>
+                                    <li><a href="javascript:void(0)">About Us <i class="fa fa-sort-desc"></i></a>
+                                        <ul class="sub-menu">
+                                            <li><a href="school_at_glance.php">School at a Glance </a></li>
+                                            <li><a href="Our_History.php">Our History</a></li>
+                                          
+                                            <li><a href="principal_message.php">From the Principal's Desk </a></li>
+                                            <li><a href="direactor_message.php"> Managing Director Speaks</a></li>
+                                          
+                                        </ul>
+                                    </li>
+                                    <li><a href="javascript:void(0)">Admission <i class="fa fa-sort-desc"></i></a>
+                                        <ul class="sub-menu">
+                                            <li><a href="Seeking_Admission.php">Seeking Admission</a></li>
+                                            <li><a href="Admission_Helpdesk.php"> Admission Helpdesk </a></li>
+                                            <li><a href="Admission_Procedure.php"> Admission Procedure</a></li>
+                                            <li><a href="Scholarships.php">Scholarships </a></li>
+                                          
+                                        </ul>
+                                    </li>
+                                    <li><a href="javascript:void(0)">Student Life <i class="fa fa-sort-desc"></i></a>
+                                        <ul class="sub-menu">
+                                            <li><a href="Academics.php">Academics</a></li>
+                                            <li><a href="Sports.php">Sports</a></li>
+                                            <li><a href="Houses.php">Houses</a></li>
+                                             <li><a href="Co_curricular.php">Co-curricular </a></li>
+                                         
+                                        </ul>
+                                    </li>
+
+                                    <li><a href="javascript:void(0)">News & Calendar<i class="fa fa-sort-desc"></i></a>
+                                        <ul class="sub-menu">
+                                             <li><a href="News_and_Updates.php">News And Updates</a></li>
+                                           
+                                           <li><a href="all_toppers.php"> Academic News</a></li> 
+                                         
+                                            <li><a href="img/Holiday Calendar 2024-25.pdf" target="blank">Calendar & Events</a></li>
+                                            <li><a href="news_letter_and_magzine.php">Newsletter & Magazine</a></li>
+                                            
+                                        </ul>
+                                    </li>
+                                    
+                                     
+                                    <li><a href="javascript:void(0)">Gallery<i class="fa fa-sort-desc"></i></a>
+                                        <ul class="sub-menu">
+                                            <li><a href="gallery.php?heading=Events"> Events</a></li>
+                                            <li><a href="gallery.php?heading=The School">The School</a></li>
+                                         
+                                         
+                                        </ul>
+                                    </li>
+                                    
+                                    <li><a href="Contact_Us.php">Contact Us</a></li>
+
+                                    
+                                    <li><a href="tc.php">T.C</a></li>
+                                   
+                                   
+                                </ul>
+                            </div>
+                        </div>
+                </div>
+             
+            
+        </div>
+       
+                                  
+        <div class="container">
+            <div class="row align-items-center justify-content-between">
+                <div class="d-block d-lg-none col-sm-10 col-md-10 col-10">
+                    <div class="logo">
+                        <a href="index.php" style="display: flex; justify-content: center;align-items: center;">
+                            <img src="img/logo.png" class="img-fluid" alt=""  style="max-width: 50px">
+                              <h6 class="heading_name" style="margin-bottom: 0;margin-left: 6px; text-transform: uppercase;color: #3e4095; font-family: 'Times New Roman', serif !important;">St. Mary's School</h6>
+                        </a>
+                    </div>
+                </div>
+                <div class="d-block d-lg-none col-sm-2 col-md-2 col-2">
+                    <div class="mobile-nav-wrap">
+                        <div id="hamburger"><i class="fa fa-bars"></i></div>
+                        
+                        <div class="mobile-nav">
+                            <button type="button" class="close-nav">
+                                <i class="fa fa-times-circle"></i>
+                            </button>
+                            <div class="logo pl-15 pb-20">
+                                <a href="index.php" style="display: flex; justify-content: center;align-items: center;">
+                                    <img src="img/logo.png" class="img-fluid" alt="" style="max-width: 50px">
+                                    <h6 style=" margin: 0px 0px 0px 10px; color: white">St. Mary's School</h6>
+                                </a>
+                            </div>
+                            <nav class="sidebar-nav">
+                                <ul class="metismenu" id="mobile-menu">
+                                    <li><a href="index.php">Home</a></li>
+                                    <li><a href="javascript:void(0)" class="has-arrow">About Us</a>
+                                        <ul class="sub-menu">
+                                           <li><a href="school_at_glance.php">School at a Glance </a></li>
+                                            <li><a href="Our_History.php">Our History</a></li>
+                                          
+                                            <li><a href="principal_message.php">From the Principal's Desk </a></li>
+                                            <li><a href="direactor_message.php"> Managing Director Speaks</a></li>
+                                        </ul>
+                                    </li>
+                                    <li><a href="javascript:void(0)" class="has-arrow">Admission</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="Seeking_Admission.php">Seeking Admission</a></li>
+                                            <li><a href="Admission_Helpdesk.php"> Admission Helpdesk </a></li>
+                                            <li><a href="Admission_Procedure.php"> Admission Procedure</a></li>
+                                            <li><a href="Scholarships.php">Scholarships </a></li>
+
+                                        </ul>
+                                    </li>
+                                    <li><a href="javascript:void(0)" class="has-arrow">Student Life</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="Academics.php">Academics</a></li>
+                                            <li><a href="Sports.php">Sports</a></li>
+                                            <li><a href="Houses.php">Houses</a></li>
+                                             <li><a href="Co_curricular.php">Co-curricular </a></li>
+                                             
+                                        </ul>
+                                    </li>
+                                    <li><a href="javascript:void(0)" class="has-arrow">News & Calendar</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="imp_news.php">Important News</a></li>
+                                        <li><a href="all_toppers.php"> Academic News</a></li>
+                                           
+                                            <li><a href="img/Holiday Calendar 2024-25.pdf" target="blank">Calendar & Events</a></li>
+                                            <li><a href="news_letter_and_magzine.php">Newsletter & Magazine</a></li>
+                                            <li><a href="News_and_Updates.php">News And Updates</a></li>
+
+
+                                        </ul>
+                                    </li>
+                                     
+                                
+                                    <li><a href="javascript:void(0)" class="has-arrow">Gallery</a>
+                                        <ul class="sub-menu">
+                                            <li><a href="gallery.php?heading=The School"> Events</a></li>
+                                            <li><a href="gallery.php?heading=The School">The School</a></li>
+                                            
+                                        </ul>
+                                    </li>
+                                  
+                                   
+                                    <li><a href="Contact_Us.php">Contact Us</a></li>
+                                    
+                                    <li><a href="tc.php">T.C</a></li>
+                                    
+                                    
+                                </ul>
+                            </nav>
+                            <div class="action-bar text-white">
+                                <div class="single-info-element">
+                                    <div class="icon">
+                                        <i class="fa fa-envelope"></i>
+                                    </div>
+                                    <div class="text">
+                                        <h5>Email Now</h5>
+                                        <span>st.marysmpi85@gmail.com</span>
+                                    </div>
+                                </div>
+                                <div class="call-us">
+                                    <div class="icon text-white">
+                                        <i class="fa fa-phone"></i>
+                                    </div>
+                                    <div class="text">
+                                        <h5>Call Now</h5>
+                                        <span> 089234 56699</span>
+                                    </div>
+                                </div>
+                                <a href="#" target="_blank" class="theme-btn free-btn mt-4">ONLINE FEE PAYMENT</a>
+                              
+                                <a href="#" class="theme-btn free-btn mt-2"> T.C.</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="overlay"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+  
+  <style type="text/css">
+    @media(max-width:767px) {
+      .sec-text {
+        padding: 0 10px;
+      }
+
+      .desc {
+        width: inherit !important;
+      }
+    }
+  </style>
+
+  <footer class="footer-1 footer-wrap" style="">
+        <div class="footer-widgets-wrapper text-white bg-cover" style="background-image: url('images/footer-line.png')">
+            <div class="container-fluid" style="padding-left: 5%;">
+                <div class="row">
+                    <div class="col-lg-8 col-12 px-right">
+                        <div class="row justify-content-between py-5">
+                            <div class="col-sm-6 col-12 col-lg-6 mb-5 mb-lg-0">
+                                <div class="about-quantech pe-md-5 pe-xl-0" >
+                                    <a href="index.php" style="display: flex; align-items: center;">
+                                      <div>
+                                          <img src="img/logo.png" alt="" style="max-width: 80px;margin: auto;display: flex;">
+                                            <h1 class="fs-lg" style="text-transform: uppercase;color: white; font-family: 'Times New Roman', serif !important; font-size: 30px; margin-top: 12px">S<span style="font-size: 20px;font-family: 'Times New Roman', serif !important;">t</span>. Mary's School</h1>
+                                      </div>
+
+                                      
+                                          
+                                    </a>
+                                </div>
+                                <div class="social-links">
+                                    <a href="#" target="_blank">
+                                        <img class="img-fluid" src="images/icons/facebook.svg" alt="SKD Academy">
+                                    </a>
+                                    <a href="#" target="_blank">
+                                        <img class="img-fluid" src="images/icons/instagram.svg" alt="SKD Academy">
+                                    </a>
+                                
+                                    <a href="#" target="_blank">
+                                        <img class="img-fluid" src="images/icons/youtube.svg" alt="SKD Academy">
+                                    </a>
+
+                                </div>
+                            </div>
+                            
+                            
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    
+</body>
+
+</html>

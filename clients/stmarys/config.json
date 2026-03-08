@@ -1,0 +1,22 @@
+{
+  "client_id": "stmarys",
+  "business_name": "ST MARYS SCHOOL",
+  "business_type": "school",
+  "website_url": "https://www.stmarysmainpuri.in/i",
+  "contact_email": "st.marysmpi85@gmail.com",
+  "contact_phone": "089234 56699",
+  "n8n_webhook_url": "http://localhost:5678",
+  "owner_email": "st.marysmpi85@gmail.com",
+  "bot_name": "ASSISTANT",
+  "instagram_page_id": "",
+  "manychat_api_key": "",
+  "instagram_access_token": "",
+  "instagram_channel": "",
+  "embedding_model": "all-MiniLM-L6-v2",
+  "llm_model": "groq/llama-3.1-8b-instant",
+  "similarity_threshold": 0.35,
+  "top_k": 5,
+  "max_response_tokens": 500,
+  "prompt_version": 1,
+  "cache_ttl": 3600
+}

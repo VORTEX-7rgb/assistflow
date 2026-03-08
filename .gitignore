@@ -1,0 +1,57 @@
+# ─────────────────────────────────────────
+# RapidRAG .gitignore
+# ─────────────────────────────────────────
+
+# Environment
+.env
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Client data (sensitive — never commit)
+clients/*/vectors/
+clients/*/documents/
+clients/*/logo.png
+
+# Keep client configs for version control (optional)
+# !clients/*/config.json
+# !clients/*/prompt.txt
+
+# Cache (ephemeral)
+cache/
+
+# Logs (ephemeral)
+logs/
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Python packaging
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Temp files
+*.tmp
+*.bak
+*.log
